@@ -1,0 +1,12 @@
+# Compiled output
+bin/
+*.class
+
+# Eclipse project metadata (generated locally)
+.settings/
+.classpath
+.project
+
+# OS/editor clutter
+.DS_Store
+Thumbs.db
