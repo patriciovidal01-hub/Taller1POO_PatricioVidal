@@ -20,8 +20,8 @@ public class Taller1 {
 		// 22.330.827-9
 		// ICCI
 		/*
-		try (BufferedWriter bw = new BufferedWriter(new FileWriter("Usuarios.txt", true))) {
-			
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter("Registros.txt", true))) {
+			bw.write()
 			
 		} catch (Exception e){
 			System.out.println("Error");
@@ -29,15 +29,15 @@ public class Taller1 {
 		*/
 		
 		Scanner s = new Scanner(System.in);
-		
-		System.out.println("1) Menu de Usuarios");
-		System.out.println("2) Menu de Actividades");
-		System.out.println("3) Salir");
-			
 		// CONTROL DE ERRORES \\
 		int opcion;	
 		boolean cargado = false;
 		do {
+			
+			System.out.println("1) Menu de Usuarios");
+			System.out.println("2) Menu de Actividades");
+			System.out.println("3) Salir");
+			
 			try {
 				String recibe = s.nextLine();
 				opcion = Integer.parseInt(recibe);
@@ -89,18 +89,21 @@ public class Taller1 {
 		}
 		} while(index == -1); 
 		
-		System.out.printf("Bienvenido! %s", usuario);
-		System.out.println("");
-		System.out.println("¿Que deseas hacer?");
-		System.out.println("");
-		System.out.println("1) Registrar Actividad");
-		System.out.println("2) Modificar Actividad");
-		System.out.println("3) Eliminar Actividad");
-		System.out.println("4) Cambiar Contraseña");
-		System.out.println("5) Salir");
 		
 		int opcion = 0;
 		do {
+			
+			System.out.printf("Bienvenido! %s", usuario);
+			System.out.println("");
+			System.out.println("¿Que deseas hacer?");
+			System.out.println("");
+			System.out.println("1) Registrar Actividad");
+			System.out.println("2) Modificar Actividad");
+			System.out.println("3) Eliminar Actividad");
+			System.out.println("4) Cambiar Contraseña");
+			System.out.println("5) Salir");
+			
+			
 			try {
 				String recibe = scanner.nextLine();
 				opcion = Integer.parseInt(recibe);
@@ -113,7 +116,7 @@ public class Taller1 {
 			switch(opcion) {
 			
 			case(1):
-				Registrar_Actividad();
+				Registrar_Actividad("Registros.txt", scanner, usuario);
 				break;
 			case(2):
 				Modificar_Actividad();
@@ -124,11 +127,13 @@ public class Taller1 {
 			case(4):
 				Cambiar_Contraseña();
 				break;
+			case(5):
+				break;
 			default:
 				System.out.println("Ingrese un numero valido");
 			}
 			
-		} while(opcion != 3);
+		} while(opcion != 5);
 		
 		
 		
@@ -179,10 +184,85 @@ public class Taller1 {
 		
 	}
 	
-	public static void Registrar_Actividad() {
+	public static void Registrar_Actividad(String file, Scanner scanner, String user) {
+		
+		boolean valida_fecha = false;
+		
+		do {
+			
+			try {
+			System.out.println("Digame la fecha, de forma dia/mes/año");
+			String fecha = scanner.nextLine();
+			String[] partes_fecha = fecha.split("/");
+			int dia = Integer.parseInt(partes_fecha[0]);
+			int mes = Integer.parseInt(partes_fecha[1]);
+			int año = Integer.parseInt(partes_fecha[2]);
+			if (dia >= 31 || dia < 0 || mes > 12 || mes < 0 || año < 2000) {
+				System.out.println("Ingrese numeros correctos");
+			} else {
+				System.out.println("Digame el nombre de la actividad");
+				String actividad = scanner.nextLine();
+				System.out.println("Digame las horas de la actividad");
+				String horas_actividad = scanner.nextLine();
+				int horas = Integer.parseInt(horas_actividad);
+				
+				valida_fecha = true;
+			}
+		
+			} catch (Exception e) {
+				System.out.println("Formato invalido");
+				valida_fecha = false;
+			}
+		} while(!valida_fecha);
 		
 		
-	}
+		// MODIFICAR ARCHIVO \\
+		File arch_og = new File("Registros.txt");
+		File arch_new = new File("Registros_temporal.txt");
+		
+		try (BufferedReader br = new BufferedReader(new FileReader("Registros.txt"));
+			 BufferedWriter bw = new BufferedWriter(new FileWriter("Registros_temporal.txt"))) {
+			
+			String linea;
+			
+			while((linea = br.readLine()) != null) {
+				
+				
+				bw.write(linea);
+				bw.newLine();
+			}
+				
+		} catch (IOException e){
+			System.out.println("Error");
+		}
+		
+		if(arch_og.delete()) {
+			
+			if(arch_new.renameTo(arch_og)) {
+				System.out.println("Archivo cambiado");
+				
+			} else {
+				System.out.println("No se pudo renombrar");
+			}
+			
+		} else {
+			
+			System.out.println("No se pudo borrar archivo original");
+		}
+		}
+		
+		
+		
+		/*
+		
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, true))) {
+			bw.write("hola");
+			
+		} catch (Exception e){
+			System.out.println("Error");
+		}
+		
+		*/
 	
 	public static void Modificar_Actividad() {
 		
