@@ -13,7 +13,8 @@ public class Taller1 {
 	
 	public static String[] usuarios = new String[3];
 	public static String[] contraseñas = new String[3];
-	
+	public static int[] fechas = new int[3];
+	public static String[] actividad = new String[2];
 	
 	public static void main(String[] args){ 
 		// Patricio Javier Vidal Veas
@@ -49,6 +50,8 @@ public class Taller1 {
 			
 			switch(opcion) {
 			
+			case(0):
+				break;
 			case(1):
 				Menu_Usuarios(s, cargado);
 				break;
@@ -187,6 +190,7 @@ public class Taller1 {
 	public static void Registrar_Actividad(String file, Scanner scanner, String user) {
 		
 		boolean valida_fecha = false;
+		int cronologia = 0;
 		
 		do {
 			
@@ -194,17 +198,19 @@ public class Taller1 {
 			System.out.println("Digame la fecha, de forma dia/mes/año");
 			String fecha = scanner.nextLine();
 			String[] partes_fecha = fecha.split("/");
-			int dia = Integer.parseInt(partes_fecha[0]);
-			int mes = Integer.parseInt(partes_fecha[1]);
-			int año = Integer.parseInt(partes_fecha[2]);
-			if (dia >= 31 || dia < 0 || mes > 12 || mes < 0 || año < 2000) {
+			fechas[0] = Integer.parseInt(partes_fecha[0]);
+			fechas[1] = Integer.parseInt(partes_fecha[1]);
+			fechas[2] = Integer.parseInt(partes_fecha[2]);
+			cronologia = (fechas[0]) + (fechas[1])*30 + (fechas[2]*365);
+			if (fechas[0] >= 31 || fechas[0] < 0 || fechas[1] > 12 || fechas[1] < 0 || fechas[2] < 2000) {
 				System.out.println("Ingrese numeros correctos");
 			} else {
-				System.out.println("Digame el nombre de la actividad");
-				String actividad = scanner.nextLine();
 				System.out.println("Digame las horas de la actividad");
-				String horas_actividad = scanner.nextLine();
-				int horas = Integer.parseInt(horas_actividad);
+				actividad[0] = scanner.nextLine();
+				int horas = Integer.parseInt(actividad[0]);
+				System.out.println("Digame el nombre de la actividad");
+				actividad[1] = scanner.nextLine();
+				
 				
 				valida_fecha = true;
 			}
@@ -225,13 +231,26 @@ public class Taller1 {
 			
 			String linea;
 			
+			boolean escrito = false;
+			
 			while((linea = br.readLine()) != null) {
-				
-				
-				bw.write(linea);
+				String[] partes = linea.split(";");
+				String[] partes_dos = partes[1].split("/");
+				int cronologia_dos = Integer.parseInt(partes_dos[0]) + (Integer.parseInt(partes_dos[1]))*30 + (Integer.parseInt(partes_dos[2]))*365;
+				if (cronologia < cronologia_dos && escrito == false) {
+					bw.write(linea);
+					bw.newLine();
+					bw.write(user + ";" + fechas[0] + "/" + fechas[1] + "/" + fechas[2] + ";" + actividad[0] + ";" + actividad[1]);
+					escrito = true;
+					
+				} else bw.write(linea);				
 				bw.newLine();
 			}
-				
+			
+			if (escrito == false) {
+				bw.write(user + ";" + fechas[0] + "/" + fechas[1] + "/" + fechas[2] + ";" + actividad[0] + ";" + actividad[1]);
+				bw.newLine();
+			}
 		} catch (IOException e){
 			System.out.println("Error");
 		}
@@ -239,7 +258,7 @@ public class Taller1 {
 		if(arch_og.delete()) {
 			
 			if(arch_new.renameTo(arch_og)) {
-				System.out.println("Archivo cambiado");
+				System.out.println("¡Actividad Registrada!");
 				
 			} else {
 				System.out.println("No se pudo renombrar");

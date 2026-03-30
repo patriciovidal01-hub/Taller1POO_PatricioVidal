@@ -133,7 +133,7 @@ Estefania;13/04/2026;3;programar
 Martin;14/04/2026;6;ser therian
 Catalina;14/04/2026;5;ser Batman por las noches
 Estefania;14/04/2026;3;investigar las cutiemarks
-Martin;15/04/2026;2;programar
+Martin;15/04/2026;2;programarMartin;14/4/2026;7;existir
 Catalina;15/04/2026;3;estudiar
 Estefania;15/04/2026;1;Ver mlp
 Martin;16/04/2026;4;ser therian
@@ -198,3 +198,5 @@ Catalina;05/05/2026;1;programar
 Estefania;05/05/2026;2;Ver mlp
 Martin;06/05/2026;5;ser therian
 Catalina;06/05/2026;6;ser Batman por las noches
+Martin;15/12/2026;8;ver reels
+Martin;14/4/2026;7;existir
