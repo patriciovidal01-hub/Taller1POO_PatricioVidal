@@ -11,10 +11,12 @@ import java.util.Scanner;
 
 public class Taller1 {
 	
+	public static String[][] usuarios_actividades = new String[3][300];
 	public static String[] usuarios = new String[3];
 	public static String[] contraseñas = new String[3];
 	public static int[] fechas = new int[3];
 	public static String[] actividad = new String[2];
+	public static Scanner s = new Scanner(System.in);
 	
 	public static void main(String[] args){ 
 		// Patricio Javier Vidal Veas
@@ -28,11 +30,9 @@ public class Taller1 {
 			System.out.println("Error");
 		}
 		*/
-		
-		Scanner s = new Scanner(System.in);
+		Leer_archivo_usuarios();	
 		// CONTROL DE ERRORES \\
 		int opcion;	
-		boolean cargado = false;
 		do {
 			
 			System.out.println("1) Menu de Usuarios");
@@ -53,7 +53,7 @@ public class Taller1 {
 			case(0):
 				break;
 			case(1):
-				Menu_Usuarios(s, cargado);
+				Menu_Usuarios();
 				break;
 			case(2):
 				Menu_Actividades();
@@ -69,18 +69,17 @@ public class Taller1 {
 	}
 	
 	
-	public static void Menu_Usuarios(Scanner scanner, boolean cargado) {
+	public static void Menu_Usuarios() {
 		
-		cargado = Leer_archivo(cargado, "Usuarios.txt");	
 		int index = 0;
 		String usuario;
 		do { // ACCESO AL USUARIO \\
 		System.out.println("Usuario:");
-		usuario = scanner.nextLine();
-		index = Verificar_Usuario(scanner, usuario, usuarios);
+		usuario = s.nextLine();
+		index = Verificar_Usuario(usuario, usuarios);
 		if (index != -1) {
 			System.out.println("Contraseña:");
-			String contraseña = scanner.nextLine();
+			String contraseña = s.nextLine();
 			if (contraseñas[index].equals(contraseña)) {
 				System.out.println("Acceso Permitido!");
 				
@@ -108,7 +107,7 @@ public class Taller1 {
 			
 			
 			try {
-				String recibe = scanner.nextLine();
+				String recibe = s.nextLine();
 				opcion = Integer.parseInt(recibe);
 			} catch(Exception e) {
 
@@ -119,7 +118,7 @@ public class Taller1 {
 			switch(opcion) {
 			
 			case(1):
-				Registrar_Actividad("Registros.txt", scanner, usuario);
+				Registrar_Actividad("Registros.txt", usuario);
 				break;
 			case(2):
 				Modificar_Actividad();
@@ -142,9 +141,8 @@ public class Taller1 {
 		
 	}
 	
-	public static boolean Leer_archivo(boolean cargado, String archivo) {
-		if (!cargado) {
-			File usuarios_arch = new File(archivo);
+	public static void Leer_archivo_usuarios() {
+			File usuarios_arch = new File("Usuarios.txt");
 			int contador = 0;
 			String linea;
 			
@@ -157,17 +155,41 @@ public class Taller1 {
 					contador++;
 				
 				}
-				cargado = true;
 			} catch (FileNotFoundException error) {
 				System.out.println("Archivo Usuarios no encontrado");
 				
 			}
 		} 
-		return cargado;
-	}
+	
+	public static void Leer_archivo_registros() {
+		File usuarios_arch = new File("Registros.txt");
+		int contador = 0;
+		String linea;
+		
+		try(Scanner lector = new Scanner(usuarios_arch)) {
+			while(lector.hasNextLine()) {
+				linea = lector.nextLine();
+				String[] partes = linea.split(";");
+				
+				if (partes[0] == usuarios[0]) {
+					usuarios_actividades[0][contador] = linea;
+					
+				} else if (partes[0] == usuarios[1]) {
+					usuarios_actividades[1][contador] = linea;
+					
+				} else usuarios_actividades[2][contador] = linea;
+				
+				contador++;
+			
+			}
+		} catch (FileNotFoundException error) {
+			System.out.println("Archivo Registros no encontrado");		
+		}
+	} 
 	
 	
-	public static int Verificar_Usuario(Scanner scanner, String user, String[] lista) {
+	
+	public static int Verificar_Usuario(String user, String[] lista) {
 		int indice = -1;
 		for (int i = 0; i < lista.length; i++) {
 			if (lista[i].equals(user)) {
@@ -187,7 +209,7 @@ public class Taller1 {
 		
 	}
 	
-	public static void Registrar_Actividad(String file, Scanner scanner, String user) {
+	public static void Registrar_Actividad(String file, String user) {
 		
 		boolean valida_fecha = false;
 		int cronologia = 0;
@@ -196,7 +218,7 @@ public class Taller1 {
 			
 			try {
 			System.out.println("Digame la fecha, de forma dia/mes/año");
-			String fecha = scanner.nextLine();
+			String fecha = s.nextLine();
 			String[] partes_fecha = fecha.split("/");
 			fechas[0] = Integer.parseInt(partes_fecha[0]);
 			fechas[1] = Integer.parseInt(partes_fecha[1]);
@@ -206,10 +228,10 @@ public class Taller1 {
 				System.out.println("Ingrese numeros correctos");
 			} else {
 				System.out.println("Digame las horas de la actividad");
-				actividad[0] = scanner.nextLine();
-				int horas = Integer.parseInt(actividad[0]);
+				actividad[0] = s.nextLine();
+				int horas = Integer.parseInt(actividad[0]); // ARREGLAR ESTO DESPUES
 				System.out.println("Digame el nombre de la actividad");
-				actividad[1] = scanner.nextLine();
+				actividad[1] = s.nextLine();
 				
 				
 				valida_fecha = true;
@@ -268,25 +290,47 @@ public class Taller1 {
 			
 			System.out.println("No se pudo borrar archivo original");
 		}
-		}
+	}
 		
+	public static void Modificar_Actividad() {
 		
+		File arch_og = new File("Registros.txt");
+		File arch_new = new File("Registros_temporal.txt");
 		
-		/*
-		
-		try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, true))) {
-			bw.write("hola");
+		try (BufferedReader br = new BufferedReader(new FileReader("Registros.txt"));
+			 BufferedWriter bw = new BufferedWriter(new FileWriter("Registros_temporal.txt"))) {
 			
-		} catch (Exception e){
+			String linea;
+			
+			while((linea = br.readLine()) != null) {
+				
+				if (0 == 0) {
+					bw.write("pepe");
+			
+					
+				} else bw.write(linea);				
+				bw.newLine();
+				
+			}
+		} catch (IOException e){
 			System.out.println("Error");
 		}
 		
-		*/
-	
-	public static void Modificar_Actividad() {
-		
-		
+		if(arch_og.delete()) {
+			
+			if(arch_new.renameTo(arch_og)) {
+				System.out.println("¡Actividad Modificada!");
+				
+			} else {
+				System.out.println("No se pudo renombrar");
+			}
+			
+		} else {
+			
+			System.out.println("No se pudo borrar archivo original");
+		}
 	}
+
 	
 	public static void Eliminar_Actividad() {
 		
