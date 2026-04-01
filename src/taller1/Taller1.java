@@ -14,23 +14,19 @@ public class Taller1 {
 	public static String[][] usuarios_actividades = new String[3][300];
 	public static String[] usuarios = new String[3];
 	public static String[] contraseñas = new String[3];
-	public static int[] fechas = new int[3];
 	public static String[] actividad = new String[2];
+	public static int[] fechas = new int[3];
 	public static Scanner s = new Scanner(System.in);
+	public static int identificador;
+	public static int contador_actividades = 0;
+	public static int[] contador_usuario = new int[3];
 	
 	public static void main(String[] args){ 
 		// Patricio Javier Vidal Veas
 		// 22.330.827-9
 		// ICCI
-		/*
-		try (BufferedWriter bw = new BufferedWriter(new FileWriter("Registros.txt", true))) {
-			bw.write()
-			
-		} catch (Exception e){
-			System.out.println("Error");
-		}
-		*/
 		Leer_archivo_usuarios();	
+		Leer_archivo_registros();
 		// CONTROL DE ERRORES \\
 		int opcion;	
 		do {
@@ -71,31 +67,30 @@ public class Taller1 {
 	
 	public static void Menu_Usuarios() {
 		
-		int index = 0;
-		String usuario;
 		do { // ACCESO AL USUARIO \\
 		System.out.println("Usuario:");
-		usuario = s.nextLine();
-		index = Verificar_Usuario(usuario, usuarios);
-		if (index != -1) {
+		String usuario = s.nextLine();
+		Verificar_Usuario(usuario);
+		if (identificador != -1) {
+			
+			
 			System.out.println("Contraseña:");
 			String contraseña = s.nextLine();
-			if (contraseñas[index].equals(contraseña)) {
-				System.out.println("Acceso Permitido!");
+			if (contraseñas[identificador].equals(contraseña)) {
+				System.out.println("Acceso Permitido!");	
 				
 			} else {
-				index = -1;
+				identificador = -1;
 				System.out.println("Contraseña erronea");
 			}
 			
 		}
-		} while(index == -1); 
-		
+		} while(identificador == -1); 
 		
 		int opcion = 0;
 		do {
 			
-			System.out.printf("Bienvenido! %s", usuario);
+			System.out.printf("Bienvenido! %s", usuarios[identificador]);
 			System.out.println("");
 			System.out.println("¿Que deseas hacer?");
 			System.out.println("");
@@ -104,7 +99,6 @@ public class Taller1 {
 			System.out.println("3) Eliminar Actividad");
 			System.out.println("4) Cambiar Contraseña");
 			System.out.println("5) Salir");
-			
 			
 			try {
 				String recibe = s.nextLine();
@@ -118,7 +112,7 @@ public class Taller1 {
 			switch(opcion) {
 			
 			case(1):
-				Registrar_Actividad("Registros.txt", usuario);
+				Registrar_Actividad("Registros.txt", usuarios[identificador]);
 				break;
 			case(2):
 				Modificar_Actividad();
@@ -137,8 +131,6 @@ public class Taller1 {
 			
 		} while(opcion != 5);
 		
-		
-		
 	}
 	
 	public static void Leer_archivo_usuarios() {
@@ -153,7 +145,6 @@ public class Taller1 {
 					usuarios[contador] = partes[0];
 					contraseñas[contador] = partes[1];
 					contador++;
-				
 				}
 			} catch (FileNotFoundException error) {
 				System.out.println("Archivo Usuarios no encontrado");
@@ -163,48 +154,43 @@ public class Taller1 {
 	
 	public static void Leer_archivo_registros() {
 		File usuarios_arch = new File("Registros.txt");
-		int contador = 0;
 		String linea;
 		
 		try(Scanner lector = new Scanner(usuarios_arch)) {
 			while(lector.hasNextLine()) {
 				linea = lector.nextLine();
 				String[] partes = linea.split(";");
+				int index = Verificar_Usuario_archivo(partes[0]);
+				usuarios_actividades[index][contador_usuario[index]] = linea;
+				contador_usuario[index]++;
 				
-				if (partes[0] == usuarios[0]) {
-					usuarios_actividades[0][contador] = linea;
-					
-				} else if (partes[0] == usuarios[1]) {
-					usuarios_actividades[1][contador] = linea;
-					
-				} else usuarios_actividades[2][contador] = linea;
-				
-				contador++;
-			
+				contador_actividades++;
 			}
 		} catch (FileNotFoundException error) {
 			System.out.println("Archivo Registros no encontrado");		
 		}
 	} 
-	
-	
-	
-	public static int Verificar_Usuario(String user, String[] lista) {
-		int indice = -1;
-		for (int i = 0; i < lista.length; i++) {
-			if (lista[i].equals(user)) {
-					indice = i;
+	public static void Verificar_Usuario(String user) {
+		identificador = -1;
+		for (int i = 0; i < usuarios.length; i++) {
+			if (usuarios[i].equals(user)) {
+					identificador = i;
 				}
 			}
-		if (indice == -1) {
+		if (identificador == -1) {
 			System.out.println("Usuario No Encontrado");
-			return indice;
+			
 		}
-		return indice;
 		}
 	
-	
-	
+	public static int Verificar_Usuario_archivo(String user) {
+		for (int k = 0; k < usuarios.length; k++) {
+			if (usuarios[k].equals(user)) {
+					return k;
+				}
+			}
+		return -1;
+		}
 	public static void Menu_Actividades() {
 		
 	}
@@ -213,7 +199,7 @@ public class Taller1 {
 		
 		boolean valida_fecha = false;
 		int cronologia = 0;
-		
+		if (contador_actividades < 300) {
 		do {
 			
 			try {
@@ -260,10 +246,12 @@ public class Taller1 {
 				String[] partes_dos = partes[1].split("/");
 				int cronologia_dos = Integer.parseInt(partes_dos[0]) + (Integer.parseInt(partes_dos[1]))*30 + (Integer.parseInt(partes_dos[2]))*365;
 				if (cronologia < cronologia_dos && escrito == false) {
-					bw.write(linea);
-					bw.newLine();
 					bw.write(user + ";" + fechas[0] + "/" + fechas[1] + "/" + fechas[2] + ";" + actividad[0] + ";" + actividad[1]);
+					bw.newLine();
+					bw.write(linea);
+					
 					escrito = true;
+					
 					
 				} else bw.write(linea);				
 				bw.newLine();
@@ -271,7 +259,6 @@ public class Taller1 {
 			
 			if (escrito == false) {
 				bw.write(user + ";" + fechas[0] + "/" + fechas[1] + "/" + fechas[2] + ";" + actividad[0] + ";" + actividad[1]);
-				bw.newLine();
 			}
 		} catch (IOException e){
 			System.out.println("Error");
@@ -281,7 +268,12 @@ public class Taller1 {
 			
 			if(arch_new.renameTo(arch_og)) {
 				System.out.println("¡Actividad Registrada!");
-				
+				contador_actividades = 0;
+				for(int i = 0; i < contador_usuario.length; i++ ) {
+					contador_usuario[i] = 0;
+
+				}
+				Leer_archivo_registros();
 			} else {
 				System.out.println("No se pudo renombrar");
 			}
@@ -290,10 +282,93 @@ public class Taller1 {
 			
 			System.out.println("No se pudo borrar archivo original");
 		}
+		} else {
+			System.out.println("No se pueden registrar más actividades, cupos llenos");
+		}
 	}
 		
 	public static void Modificar_Actividad() {
 		
+		int opcion = -1;
+		int opcion2 = -1;
+		int contador = 0;
+		do {
+		contador = 0;
+		System.out.println("¿Que actividad desea modificar?");
+		System.out.println("0) Regresar");
+		for (int j = 0; j < (contador_usuario[identificador]); j++) {
+			System.out.println((j+1) + ") " + usuarios_actividades[identificador][j]);		
+			contador++;
+		
+		}
+		try {
+			String recibe = s.nextLine();
+			opcion = Integer.parseInt(recibe);
+			if (opcion > contador || opcion < 0) {
+				opcion =-1;
+				System.out.println("Eliga un numero que corresponda a una actividad");
+			} 
+			
+		} catch(NumberFormatException e) {
+			System.out.println(e);
+			System.out.println("Solo numeros");
+			opcion = -1;
+		}
+					
+			
+		} while (opcion < 0);
+		
+		
+		do {
+			if (opcion != 0) {
+				System.out.println("¿Que desea modificar de esta actividad?");
+				System.out.println(usuarios_actividades[identificador][opcion-1]);
+				System.out.println();
+				System.out.println("0) Regresar");
+				System.out.println("1) Fecha");
+				System.out.println("2) Duracion");
+				System.out.println("3) Tipo Actividad");
+					
+				String recibe2 = s.nextLine();
+				opcion2 = Integer.parseInt(recibe2);
+		
+				if (opcion2 != 0 && opcion2 != 1 && opcion2 != 2 && opcion2 != 3)	{
+					System.out.println("Eliga un numero que corresponda a una opcion");
+					opcion2 = -1;
+					
+				} else {
+					
+					switch(opcion2) {
+					
+					case(0):
+						 break;
+					case(1):
+						try {
+						System.out.println("Digame la fecha, de forma dia/mes/año");
+						String fecha = s.nextLine();
+						String[] partes_fecha = fecha.split("/");
+						fechas[0] = Integer.parseInt(partes_fecha[0]);
+						fechas[1] = Integer.parseInt(partes_fecha[1]);
+						fechas[2] = Integer.parseInt(partes_fecha[2]);
+						if (fechas[0] >= 31 || fechas[0] < 0 || fechas[1] > 12 || fechas[1] < 0 || fechas[2] < 2000) {
+							System.out.println("Ingrese numeros correctos");
+						} else {
+							Modificar(usuarios_actividades[identificador][opcion-1], 0, fecha);
+							
+						}
+					
+						} catch (Exception e) {
+							System.out.println("Formato invalido");
+							opcion2 = -1;
+						}
+					
+					}
+				}
+					
+			}
+			} while (opcion2 < 0);
+		
+		/*
 		File arch_og = new File("Registros.txt");
 		File arch_new = new File("Registros_temporal.txt");
 		
@@ -329,8 +404,69 @@ public class Taller1 {
 			
 			System.out.println("No se pudo borrar archivo original");
 		}
+		*/
 	}
-
+	
+	
+	public static void Modificar(String linea_modificar, int atributo, String cambio) {
+		File arch_og = new File("Registros.txt");
+		File arch_new = new File("Registros_temporal.txt");
+		
+		try (BufferedReader br = new BufferedReader(new FileReader("Registros.txt"));
+			 BufferedWriter bw = new BufferedWriter(new FileWriter("Registros_temporal.txt"))) {
+		
+			String linea;
+			String[] partes = linea_modificar.split(";");
+			String usuario = partes[0];
+			String fecha = partes[1];
+			String horas_actividad = partes[2];
+			String actividades = partes[3];
+			int contador = 0; 
+			
+			while((linea = br.readLine()) != null) {
+				if (linea.equals(linea_modificar)) {
+					
+					switch(atributo) {
+						case(0):
+							bw.write(usuario + ";" + cambio + ";" + horas_actividad + ";" + actividades );
+							break;
+						case(1):
+							bw.write(usuario + ";" + fecha + ";" + cambio + ";" + actividades );
+							break;
+						case(2):
+							bw.write(usuario + ";" + fecha + ";" + horas_actividad + ";" + cambio );
+							break;
+					}
+					bw.newLine();
+					contador++;
+					
+				} else if (contador == (contador_actividades-1)){
+					bw.write(linea);
+					bw.newLine();
+				} else {
+					bw.write(linea);
+					bw.newLine();
+					contador++;
+				}
+					
+			}
+		} catch (IOException e){
+			System.out.println("Error");
+		}
+		
+		if(arch_og.delete()) {
+			
+			if(arch_new.renameTo(arch_og)) {
+				System.out.println("¡Actividad Registrada!");
+				contador_actividades = 0;
+				for(int i = 0; i < contador_usuario.length; i++ ) {
+					contador_usuario[i] = 0;
+				}
+				
+				Leer_archivo_registros();
+			} else System.out.println("No se pudo renombrar");
+		} else System.out.println("No se pudo borrar archivo original");
+	}
 	
 	public static void Eliminar_Actividad() {
 		
