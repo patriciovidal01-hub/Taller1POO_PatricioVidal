@@ -259,6 +259,7 @@ public class Taller1 {
 			
 			if (escrito == false) {
 				bw.write(user + ";" + fechas[0] + "/" + fechas[1] + "/" + fechas[2] + ";" + actividad[0] + ";" + actividad[1]);
+				bw.newLine();
 			}
 		} catch (IOException e){
 			System.out.println("Error");
@@ -361,50 +362,27 @@ public class Taller1 {
 							System.out.println("Formato invalido");
 							opcion2 = -1;
 						}
-					
+						break;
+					case(2):
+						System.out.println("Digame las horas de la actividad");
+						actividad[0] = s.nextLine();
+						try {
+							int prueba = Integer.parseInt(actividad[0]);
+							Modificar(usuarios_actividades[identificador][opcion-1], 1, actividad[0]);
+						} catch (Exception e) {
+							System.out.println("Solo numeros");
+						}
+						break;
+					case(3):
+						System.out.println("Digame el nombre de la actividad");
+						actividad[1] = s.nextLine();
+						Modificar(usuarios_actividades[identificador][opcion-1], 2, actividad[1]);
+						break;
 					}
 				}
 					
 			}
 			} while (opcion2 < 0);
-		
-		/*
-		File arch_og = new File("Registros.txt");
-		File arch_new = new File("Registros_temporal.txt");
-		
-		try (BufferedReader br = new BufferedReader(new FileReader("Registros.txt"));
-			 BufferedWriter bw = new BufferedWriter(new FileWriter("Registros_temporal.txt"))) {
-			
-			String linea;
-			
-			while((linea = br.readLine()) != null) {
-				
-				if (0 == 0) {
-					bw.write("pepe");
-			
-					
-				} else bw.write(linea);				
-				bw.newLine();
-				
-			}
-		} catch (IOException e){
-			System.out.println("Error");
-		}
-		
-		if(arch_og.delete()) {
-			
-			if(arch_new.renameTo(arch_og)) {
-				System.out.println("¡Actividad Modificada!");
-				
-			} else {
-				System.out.println("No se pudo renombrar");
-			}
-			
-		} else {
-			
-			System.out.println("No se pudo borrar archivo original");
-		}
-		*/
 	}
 	
 	
@@ -421,32 +399,30 @@ public class Taller1 {
 			String fecha = partes[1];
 			String horas_actividad = partes[2];
 			String actividades = partes[3];
-			int contador = 0; 
 			
 			while((linea = br.readLine()) != null) {
+			
 				if (linea.equals(linea_modificar)) {
+					
+					String linea_nueva = linea;
 					
 					switch(atributo) {
 						case(0):
-							bw.write(usuario + ";" + cambio + ";" + horas_actividad + ";" + actividades );
+							linea_nueva = (usuario + ";" + cambio + ";" + horas_actividad + ";" + actividades );
 							break;
 						case(1):
-							bw.write(usuario + ";" + fecha + ";" + cambio + ";" + actividades );
+							linea_nueva = (usuario + ";" + fecha + ";" + cambio + ";" + actividades );
 							break;
 						case(2):
-							bw.write(usuario + ";" + fecha + ";" + horas_actividad + ";" + cambio );
+							linea_nueva = (usuario + ";" + fecha + ";" + horas_actividad + ";" + cambio);
 							break;
 					}
+					bw.write(linea_nueva);
 					bw.newLine();
-					contador++;
 					
-				} else if (contador == (contador_actividades-1)){
-					bw.write(linea);
-					bw.newLine();
 				} else {
 					bw.write(linea);
 					bw.newLine();
-					contador++;
 				}
 					
 			}
