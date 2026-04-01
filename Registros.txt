@@ -197,4 +197,5 @@ Martin;05/05/2026;2;estudiar
 Catalina;05/05/2026;1;programar
 Estefania;05/05/2026;2;Ver mlp
 Martin;15/12/2026;5;PAPARDO
-Catalina;06/05/2026;6;ser Batman por las noches
+Catalina;06/05/2026;8;ser Batman por las noches
+Catalina;15/12/2026;9;mori

@@ -446,7 +446,6 @@ public class Taller1 {
 	
 	public static void Eliminar_Actividad() {
 		int opcion = -1;
-		int opcion2 = -1;
 		int contador = 0;
 		
 		do {
@@ -519,7 +518,42 @@ public class Taller1 {
 	
 	
 	public static void Cambiar_Contraseña() {
+		System.out.println("A que contraseña desea cambiarla, escribala a continuación");
+		String nueva_contraseña = s.nextLine();
 		
+		File arch_og = new File("Usuarios.txt");
+		File arch_new = new File("Usuarios_temporal.txt");
+		
+		try (BufferedReader br = new BufferedReader(new FileReader("Usuarios.txt"));
+			 BufferedWriter bw = new BufferedWriter(new FileWriter("Usuarios_temporal.txt"))) {
+		
+			String linea;
+			
+			while((linea = br.readLine()) != null) {
+			
+				String[] partes = linea.split(";");
+				String usuario = partes[0];
+				
+				if (usuario.equals(usuarios[identificador])) {
+					bw.write(usuario + ";" + nueva_contraseña);	
+					bw.newLine();
+				} else {
+					bw.write(linea);
+					bw.newLine();
+				}
+					
+			}
+		} catch (IOException e){
+			System.out.println("Error");
+		}
+		
+		if(arch_og.delete()) {
+			
+			if(arch_new.renameTo(arch_og)) {
+				System.out.println("¡Contraseña cambiada!");
+				Leer_archivo_usuarios();
+			} else System.out.println("No se pudo renombrar");
+		} else System.out.println("No se pudo borrar archivo original");
 		
 	}
 	
