@@ -445,9 +445,78 @@ public class Taller1 {
 	}
 	
 	public static void Eliminar_Actividad() {
+		int opcion = -1;
+		int opcion2 = -1;
+		int contador = 0;
 		
+		do {
+		contador = 0;
+		System.out.println("¿Que actividad desea eliminar?");
+		System.out.println("0) Regresar");
+		for (int j = 0; j < (contador_usuario[identificador]); j++) {
+			System.out.println((j+1) + ") " + usuarios_actividades[identificador][j]);		
+			contador++;
+		
+		}
+		try {
+			String recibe = s.nextLine();
+			opcion = Integer.parseInt(recibe);
+			if (opcion > contador || opcion < 0) {
+				opcion =-1;
+				System.out.println("Eliga un numero que corresponda a una actividad");
+			} else if (opcion != 0) {
+				Eliminar(usuarios_actividades[identificador][opcion-1]);
+			}
+			
+		} catch(NumberFormatException e) {
+			System.out.println(e);
+			System.out.println("Solo numeros");
+			opcion = -1;
+		}
+					
+			
+		} while (opcion < 0);		
 		
 	}
+	
+	public static void Eliminar(String linea_a_borrar) {
+		File arch_og = new File("Registros.txt");
+		File arch_new = new File("Registros_temporal.txt");
+		
+		try (BufferedReader br = new BufferedReader(new FileReader("Registros.txt"));
+			 BufferedWriter bw = new BufferedWriter(new FileWriter("Registros_temporal.txt"))) {
+		
+			String linea;
+			
+			
+			while((linea = br.readLine()) != null) {
+			
+				if (linea.equals(linea_a_borrar)) {
+														
+				} else {
+					bw.write(linea);
+					bw.newLine();
+				}
+					
+			}
+		} catch (IOException e){
+			System.out.println("Error");
+		}
+		
+		if(arch_og.delete()) {
+			
+			if(arch_new.renameTo(arch_og)) {
+				System.out.println("¡Actividad Eliminada!");
+				contador_actividades = 0;
+				for(int i = 0; i < contador_usuario.length; i++ ) {
+					contador_usuario[i] = 0;
+				}
+				
+				Leer_archivo_registros();
+			} else System.out.println("No se pudo renombrar");
+		} else System.out.println("No se pudo borrar archivo original");
+	}
+	
 	
 	public static void Cambiar_Contraseña() {
 		
