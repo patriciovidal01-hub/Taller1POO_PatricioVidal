@@ -14,12 +14,17 @@ public class Taller1 {
 	public static String[][] usuarios_actividades = new String[3][300];
 	public static String[] usuarios = new String[3];
 	public static String[] contraseñas = new String[3];
-	public static String[] actividad = new String[2];
+	public static String[] actividad_y_horas = new String[2];
+	public static String[][] actividades = new String[3][300];
+	public static int[][] horas_totales_por_actividad = new int[3][300];
+	public static int[] horas_totales = new int[3];
+	public static String[] todos_actividades = new String[300];
 	public static int[] fechas = new int[3];
 	public static Scanner s = new Scanner(System.in);
 	public static int identificador;
 	public static int contador_actividades = 0;
 	public static int[] contador_usuario = new int[3];
+	public static int[] posicion_mayor = new int[3];
 	
 	public static void main(String[] args){ 
 		// Patricio Javier Vidal Veas
@@ -73,7 +78,6 @@ public class Taller1 {
 		Verificar_Usuario(usuario);
 		if (identificador != -1) {
 			
-			
 			System.out.println("Contraseña:");
 			String contraseña = s.nextLine();
 			if (contraseñas[identificador].equals(contraseña)) {
@@ -112,7 +116,7 @@ public class Taller1 {
 			switch(opcion) {
 			
 			case(1):
-				Registrar_Actividad("Registros.txt", usuarios[identificador]);
+				Registrar_Actividad();
 				break;
 			case(2):
 				Modificar_Actividad();
@@ -163,6 +167,7 @@ public class Taller1 {
 				int index = Verificar_Usuario_archivo(partes[0]);
 				usuarios_actividades[index][contador_usuario[index]] = linea;
 				contador_usuario[index]++;
+				todos_actividades[contador_actividades] = linea;
 				
 				contador_actividades++;
 			}
@@ -191,11 +196,64 @@ public class Taller1 {
 			}
 		return -1;
 		}
+	
 	public static void Menu_Actividades() {
+		int opcion = 0;
+		for (int i = 0; i < 3; i++){
+			posicion_mayor[i] = 0;
+			for(int j = 0; j < 300; j++) {
+				actividades[i][j] = null;
+				horas_totales_por_actividad[i][j] = 0;
+			}
+		}
+		Creacion_listas_actividades_horas_y_mayor(usuarios_actividades, 0);
+		Creacion_listas_actividades_horas_y_mayor(usuarios_actividades, 1);
+		Creacion_listas_actividades_horas_y_mayor(usuarios_actividades, 2);
+		do {
+		System.out.println("¡Bienvenido al menu de Analisis!");
+		System.out.println("");
+		System.out.println("¿Que desea hacer?");
+		System.out.println("");
+		System.out.println("1) Actividad más realizada");
+		System.out.println("2) Actividad más realizada por cada usuario");
+		System.out.println("3) Usuario con mayor procrastinación");
+		System.out.println("4) Ver todas las actividades");
+		System.out.println("5) Salir");
+		
+		try {
+			String recibe = s.nextLine();
+			opcion = Integer.parseInt(recibe);
+		} catch(Exception e) {
+
+			System.out.println("Solo numeros");
+			opcion = 0;
+		}
+		
+		switch(opcion) {
+		
+		case(1):
+			Actividad_Mas_Realizada();
+			break;
+		case(2):
+			Actividad_Mas_Usuario();
+			break;
+		case(3):
+			Usuario_Mayor_Procastinacion();
+			break;
+		case(4):
+			Ver_Actividades();
+			break;
+		case(5):
+			break;
+		default:
+			System.out.println("Ingrese un numero valido");
+		}
+		} while (opcion != 5);
+		
 		
 	}
 	
-	public static void Registrar_Actividad(String file, String user) {
+	public static void Registrar_Actividad() {
 		
 		boolean valida_fecha = false;
 		int cronologia = 0;
@@ -210,14 +268,14 @@ public class Taller1 {
 			fechas[1] = Integer.parseInt(partes_fecha[1]);
 			fechas[2] = Integer.parseInt(partes_fecha[2]);
 			cronologia = (fechas[0]) + (fechas[1])*30 + (fechas[2]*365);
-			if (fechas[0] >= 31 || fechas[0] < 0 || fechas[1] > 12 || fechas[1] < 0 || fechas[2] < 2000) {
+			if (fechas[0] > 31 || fechas[0] <= 0 || fechas[1] > 12 || fechas[1] < 0 || fechas[2] < 2000) {
 				System.out.println("Ingrese numeros correctos");
 			} else {
 				System.out.println("Digame las horas de la actividad");
-				actividad[0] = s.nextLine();
-				int horas = Integer.parseInt(actividad[0]); // ARREGLAR ESTO DESPUES
+				actividad_y_horas[0] = s.nextLine();
+				int horas = Integer.parseInt(actividad_y_horas[0]); // ARREGLAR ESTO DESPUES
 				System.out.println("Digame el nombre de la actividad");
-				actividad[1] = s.nextLine();
+				actividad_y_horas[1] = s.nextLine();
 				
 				
 				valida_fecha = true;
@@ -246,7 +304,7 @@ public class Taller1 {
 				String[] partes_dos = partes[1].split("/");
 				int cronologia_dos = Integer.parseInt(partes_dos[0]) + (Integer.parseInt(partes_dos[1]))*30 + (Integer.parseInt(partes_dos[2]))*365;
 				if (cronologia < cronologia_dos && escrito == false) {
-					bw.write(user + ";" + fechas[0] + "/" + fechas[1] + "/" + fechas[2] + ";" + actividad[0] + ";" + actividad[1]);
+					bw.write(usuarios[identificador] + ";" + fechas[0] + "/" + fechas[1] + "/" + fechas[2] + ";" + actividad_y_horas[0] + ";" + actividad_y_horas[1]);
 					bw.newLine();
 					bw.write(linea);
 					
@@ -258,7 +316,7 @@ public class Taller1 {
 			}
 			
 			if (escrito == false) {
-				bw.write(user + ";" + fechas[0] + "/" + fechas[1] + "/" + fechas[2] + ";" + actividad[0] + ";" + actividad[1]);
+				bw.write(usuarios[identificador] + ";" + fechas[0] + "/" + fechas[1] + "/" + fechas[2] + ";" + actividad_y_horas[0] + ";" + actividad_y_horas[1]);
 				bw.newLine();
 			}
 		} catch (IOException e){
@@ -292,26 +350,23 @@ public class Taller1 {
 		
 		int opcion = -1;
 		int opcion2 = -1;
-		int contador = 0;
+		
 		do {
-		contador = 0;
 		System.out.println("¿Que actividad desea modificar?");
 		System.out.println("0) Regresar");
 		for (int j = 0; j < (contador_usuario[identificador]); j++) {
 			System.out.println((j+1) + ") " + usuarios_actividades[identificador][j]);		
-			contador++;
 		
 		}
 		try {
 			String recibe = s.nextLine();
 			opcion = Integer.parseInt(recibe);
-			if (opcion > contador || opcion < 0) {
+			if (opcion > (contador_usuario[identificador]) || opcion < 0) {
 				opcion =-1;
 				System.out.println("Eliga un numero que corresponda a una actividad");
 			} 
 			
 		} catch(NumberFormatException e) {
-			System.out.println(e);
 			System.out.println("Solo numeros");
 			opcion = -1;
 		}
@@ -330,58 +385,64 @@ public class Taller1 {
 				System.out.println("2) Duracion");
 				System.out.println("3) Tipo Actividad");
 					
-				String recibe2 = s.nextLine();
-				opcion2 = Integer.parseInt(recibe2);
-		
-				if (opcion2 != 0 && opcion2 != 1 && opcion2 != 2 && opcion2 != 3)	{
+				try {
+					String recibe = s.nextLine();
+					opcion2 = Integer.parseInt(recibe);
+				} catch(Exception e) {
+
+					System.out.println("Solo numeros");
+					opcion2 = 0;
+				}
+							
+				switch(opcion2) {
+				
+				case(0):
+					 break;
+				case(1):
+					try {
+					System.out.println("Digame la fecha, de forma dia/mes/año");
+					String fecha = s.nextLine();
+					String[] partes_fecha = fecha.split("/");
+					fechas[0] = Integer.parseInt(partes_fecha[0]);
+					fechas[1] = Integer.parseInt(partes_fecha[1]);
+					fechas[2] = Integer.parseInt(partes_fecha[2]);
+					if (fechas[0] >= 31 || fechas[0] < 0 || fechas[1] > 12 || fechas[1] < 0 || fechas[2] < 2000) {
+						System.out.println("Ingrese numeros correctos");
+					} else {
+						Modificar(usuarios_actividades[identificador][opcion-1], 0, fecha);
+						
+					}
+				
+					} catch (Exception e) {
+						System.out.println("Formato invalido");
+						opcion2 = -1;
+					}
+					break;
+				case(2):
+					System.out.println("Digame las horas de la actividad");
+					actividad_y_horas[0] = s.nextLine();
+					try {
+						int prueba = Integer.parseInt(actividad_y_horas[0]);
+						Modificar(usuarios_actividades[identificador][opcion-1], 1, actividad_y_horas[0]);
+					} catch (Exception e) {
+						System.out.println("Solo numeros");
+					}
+					break;
+				case(3):
+					System.out.println("Digame el nombre de la actividad");
+					actividad_y_horas[1] = s.nextLine();
+					Modificar(usuarios_actividades[identificador][opcion-1], 2, actividad_y_horas[1]);
+					break;
+				default:
 					System.out.println("Eliga un numero que corresponda a una opcion");
 					opcion2 = -1;
-					
-				} else {
-					
-					switch(opcion2) {
-					
-					case(0):
-						 break;
-					case(1):
-						try {
-						System.out.println("Digame la fecha, de forma dia/mes/año");
-						String fecha = s.nextLine();
-						String[] partes_fecha = fecha.split("/");
-						fechas[0] = Integer.parseInt(partes_fecha[0]);
-						fechas[1] = Integer.parseInt(partes_fecha[1]);
-						fechas[2] = Integer.parseInt(partes_fecha[2]);
-						if (fechas[0] >= 31 || fechas[0] < 0 || fechas[1] > 12 || fechas[1] < 0 || fechas[2] < 2000) {
-							System.out.println("Ingrese numeros correctos");
-						} else {
-							Modificar(usuarios_actividades[identificador][opcion-1], 0, fecha);
-							
-						}
-					
-						} catch (Exception e) {
-							System.out.println("Formato invalido");
-							opcion2 = -1;
-						}
-						break;
-					case(2):
-						System.out.println("Digame las horas de la actividad");
-						actividad[0] = s.nextLine();
-						try {
-							int prueba = Integer.parseInt(actividad[0]);
-							Modificar(usuarios_actividades[identificador][opcion-1], 1, actividad[0]);
-						} catch (Exception e) {
-							System.out.println("Solo numeros");
-						}
-						break;
-					case(3):
-						System.out.println("Digame el nombre de la actividad");
-						actividad[1] = s.nextLine();
-						Modificar(usuarios_actividades[identificador][opcion-1], 2, actividad[1]);
-						break;
-					}
+					break;
 				}
 					
+			} else {
+				opcion2 = 0;
 			}
+			
 			} while (opcion2 < 0);
 	}
 	
@@ -398,7 +459,7 @@ public class Taller1 {
 			String usuario = partes[0];
 			String fecha = partes[1];
 			String horas_actividad = partes[2];
-			String actividades = partes[3];
+			String actividad = partes[3];
 			
 			while((linea = br.readLine()) != null) {
 			
@@ -408,10 +469,10 @@ public class Taller1 {
 					
 					switch(atributo) {
 						case(0):
-							linea_nueva = (usuario + ";" + cambio + ";" + horas_actividad + ";" + actividades );
+							linea_nueva = (usuario + ";" + cambio + ";" + horas_actividad + ";" + actividad );
 							break;
 						case(1):
-							linea_nueva = (usuario + ";" + fecha + ";" + cambio + ";" + actividades );
+							linea_nueva = (usuario + ";" + fecha + ";" + cambio + ";" + actividad );
 							break;
 						case(2):
 							linea_nueva = (usuario + ";" + fecha + ";" + horas_actividad + ";" + cambio);
@@ -465,6 +526,7 @@ public class Taller1 {
 				System.out.println("Eliga un numero que corresponda a una actividad");
 			} else if (opcion != 0) {
 				Eliminar(usuarios_actividades[identificador][opcion-1]);
+				opcion = 0;
 			}
 			
 		} catch(NumberFormatException e) {
@@ -557,17 +619,65 @@ public class Taller1 {
 		
 	}
 	
+	
+	public static void Creacion_listas_actividades_horas_y_mayor(String[][] lista, int numero) {
+		
+		boolean existe = false;
+		int contador = 0;
+		
+		for (int i = 0; i < contador_usuario[numero]; i++) {
+			existe = false;
+			String[] partes = (lista[numero][i]).split(";");
+			int horas_actividad = Integer.parseInt(partes[2]);
+			String actividad = partes[3];
+			for (int j = 0; j < contador; j++) {
+				if(actividades[numero][j] != null && actividades[numero][j].equals(actividad) ) {
+					existe = true;
+					horas_totales_por_actividad[numero][j] += horas_actividad;
+					break;
+				}
+				
+			}
+			if(existe == false) {
+				actividades[numero][contador] = actividad;
+				horas_totales_por_actividad[numero][contador] += horas_actividad;
+				contador ++;
+			}
+		}	
+		Encontrar_Mayor(horas_totales_por_actividad, contador, numero );
+	}
+	
 	public static void Actividad_Mas_Realizada() {
+		System.out.println("La actividad más re");
+		
+		
+		
+	}
+	
+	public static void Encontrar_Mayor(int lista[][], int numero, int identifica) {
+		int mayor = -9999;
+		
+		
+		for (int i = 0; i < numero; i++) {
+			if (lista[identifica][i] > mayor) {
+				mayor = lista[identifica][i];
+				posicion_mayor[identifica] = i;
+			}
+		}
 		
 		
 	}
 	
 	public static void Actividad_Mas_Usuario() {
-		
-		
+		System.out.println("La actividad más realizada por Usuario es:");
+		System.out.println("");
+		System.out.println(usuarios[0] + "--" + actividades[0][posicion_mayor[0]] + " con " + horas_totales_por_actividad[0][posicion_mayor[0]]);
+		System.out.println(usuarios[1] + "--" + actividades[1][posicion_mayor[1]] + " con " + horas_totales_por_actividad[1][posicion_mayor[1]]);
+		System.out.println(usuarios[2] + "--" + actividades[2][posicion_mayor[2]] + " con " + horas_totales_por_actividad[2][posicion_mayor[2]]);
 	}
 	
 	public static void Usuario_Mayor_Procastinacion() {
+		
 		
 		
 	}
