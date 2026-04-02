@@ -26,6 +26,7 @@ public class Taller1 {
 	public static int[] contador_usuario = new int[3];
 	public static int[] posicion_mayor = new int[3];
 	
+	
 	public static void main(String[] args){ 
 		// Patricio Javier Vidal Veas
 		// 22.330.827-9
@@ -678,12 +679,31 @@ public class Taller1 {
 	
 	public static void Usuario_Mayor_Procastinacion() {
 		
+		int mayor = -99999;
+		int posicion_mayor = 0;
+		int[] suma_horas = new int[3];
+		for(int i = 0; i < usuarios.length; i++) {
+			for (int j = 0; j < (horas_totales_por_actividad[i].length); j++) {
+				suma_horas[i] += horas_totales_por_actividad[i][j];
+			}
+			
+		}
 		
-		
+		for(int i = 0; i < usuarios.length; i++) {
+			if(suma_horas[i] > mayor) {
+				mayor = suma_horas[i];
+				posicion_mayor = i;
+			}
+		}
+		System.out.println("El más procrastinador es " + usuarios[posicion_mayor] + " con " + suma_horas[posicion_mayor] + " horas" );
 	}
 	
 	public static void Ver_Actividades() {
-		
+		for (int i = 0; i < (todos_actividades.length); i++) {
+			if (todos_actividades[i] != null) {
+				System.out.println(i+1 + ") " + todos_actividades[i]);
+		}
+		}
 		
 	}
 }
