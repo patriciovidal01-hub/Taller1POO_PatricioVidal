@@ -15,7 +15,7 @@ public class Taller1 {
 	public static String[] usuarios = new String[3];
 	public static String[] contraseñas = new String[3];
 	public static String[] actividad_y_horas = new String[2];
-	public static String[][] actividades = new String[3][300];
+	public static String[][] actividades_unicas = new String[3][300];
 	public static int[][] horas_totales_por_actividad = new int[3][300];
 	public static int[] horas_totales = new int[3];
 	public static String[] todos_actividades = new String[300];
@@ -25,6 +25,8 @@ public class Taller1 {
 	public static int contador_actividades = 0;
 	public static int[] contador_usuario = new int[3];
 	public static int[] posicion_mayor = new int[3];
+	public static int[] horas_globales = new int[900];
+	public static String[] actividades_globales = new String[900];
 	
 	
 	public static void main(String[] args){ 
@@ -203,13 +205,15 @@ public class Taller1 {
 		for (int i = 0; i < 3; i++){
 			posicion_mayor[i] = 0;
 			for(int j = 0; j < 300; j++) {
-				actividades[i][j] = null;
+				actividades_unicas[i][j] = null;
 				horas_totales_por_actividad[i][j] = 0;
 			}
 		}
-		Creacion_listas_actividades_horas_y_mayor(usuarios_actividades, 0);
-		Creacion_listas_actividades_horas_y_mayor(usuarios_actividades, 1);
-		Creacion_listas_actividades_horas_y_mayor(usuarios_actividades, 2);
+		
+		Creacion_listas_actividades_horas(usuarios_actividades, 0);
+		Creacion_listas_actividades_horas(usuarios_actividades, 1);
+		Creacion_listas_actividades_horas(usuarios_actividades, 2);
+		Creacion_lista_global();
 		do {
 		System.out.println("¡Bienvenido al menu de Analisis!");
 		System.out.println("");
@@ -621,7 +625,7 @@ public class Taller1 {
 	}
 	
 	
-	public static void Creacion_listas_actividades_horas_y_mayor(String[][] lista, int numero) {
+	public static void Creacion_listas_actividades_horas(String[][] lista, int numero) {
 		
 		boolean existe = false;
 		int contador = 0;
@@ -632,7 +636,7 @@ public class Taller1 {
 			int horas_actividad = Integer.parseInt(partes[2]);
 			String actividad = partes[3];
 			for (int j = 0; j < contador; j++) {
-				if(actividades[numero][j] != null && actividades[numero][j].equals(actividad) ) {
+				if(actividades_unicas[numero][j] != null && actividades_unicas[numero][j].equals(actividad) ) {
 					existe = true;
 					horas_totales_por_actividad[numero][j] += horas_actividad;
 					break;
@@ -640,7 +644,7 @@ public class Taller1 {
 				
 			}
 			if(existe == false) {
-				actividades[numero][contador] = actividad;
+				actividades_unicas[numero][contador] = actividad;
 				horas_totales_por_actividad[numero][contador] += horas_actividad;
 				contador ++;
 			}
@@ -649,10 +653,51 @@ public class Taller1 {
 	}
 	
 	public static void Actividad_Mas_Realizada() {
-		System.out.println("La actividad más re");
 		
 		
+		int mayor = -9999;
+		int posicion_mayor_global = 0;
 		
+		for (int l = 0; l < (actividades_globales.length); l++) {
+			if (horas_globales[l] > mayor) {
+				mayor = horas_globales[l];
+				posicion_mayor_global = l;
+			}
+		}
+		
+		System.out.println("La actividad más realizada es: " + actividades_globales[posicion_mayor_global] + " con " + horas_globales[posicion_mayor_global] + " horas");
+	
+	}
+	
+	public static void Creacion_lista_global() {
+		for (int p = 0; p < horas_globales.length; p++) {
+			horas_globales[p] = 0;
+			actividades_globales[p] = null;
+		}
+		
+		boolean existe = false;
+		int contador = 0;
+		for (int i = 0; i < usuarios.length; i++) { 
+			for (int j = 0; j < contador_usuario[i]; j++) {
+			existe = false;
+			String[] partes = usuarios_actividades[i][j].split(";");
+			int horas_actividad = Integer.parseInt(partes[2]);
+			String actividad = partes[3];
+			for (int k = 0; k < contador; k++) {
+				if(actividades_globales[k] != null && actividades_globales[k].equals(actividad) ) {
+					existe = true;
+					horas_globales[k] += horas_actividad;
+					break;
+				}
+				
+			}
+			if(existe == false) {
+				actividades_globales[contador] = actividad;
+				horas_globales[contador] += horas_actividad;
+				contador ++;
+			}
+		}	
+		}
 	}
 	
 	public static void Encontrar_Mayor(int lista[][], int numero, int identifica) {
@@ -665,16 +710,14 @@ public class Taller1 {
 				posicion_mayor[identifica] = i;
 			}
 		}
-		
-		
 	}
 	
 	public static void Actividad_Mas_Usuario() {
 		System.out.println("La actividad más realizada por Usuario es:");
 		System.out.println("");
-		System.out.println(usuarios[0] + "--" + actividades[0][posicion_mayor[0]] + " con " + horas_totales_por_actividad[0][posicion_mayor[0]]);
-		System.out.println(usuarios[1] + "--" + actividades[1][posicion_mayor[1]] + " con " + horas_totales_por_actividad[1][posicion_mayor[1]]);
-		System.out.println(usuarios[2] + "--" + actividades[2][posicion_mayor[2]] + " con " + horas_totales_por_actividad[2][posicion_mayor[2]]);
+		System.out.println(usuarios[0] + "--" + actividades_unicas[0][posicion_mayor[0]] + " con " + horas_totales_por_actividad[0][posicion_mayor[0]]);
+		System.out.println(usuarios[1] + "--" + actividades_unicas[1][posicion_mayor[1]] + " con " + horas_totales_por_actividad[1][posicion_mayor[1]]);
+		System.out.println(usuarios[2] + "--" + actividades_unicas[2][posicion_mayor[2]] + " con " + horas_totales_por_actividad[2][posicion_mayor[2]]);
 	}
 	
 	public static void Usuario_Mayor_Procastinacion() {
@@ -683,7 +726,7 @@ public class Taller1 {
 		int posicion_mayor = 0;
 		int[] suma_horas = new int[3];
 		for(int i = 0; i < usuarios.length; i++) {
-			for (int j = 0; j < (horas_totales_por_actividad[i].length); j++) {
+			for (int j = 0; j < (contador_usuario[i]); j++) {
 				suma_horas[i] += horas_totales_por_actividad[i][j];
 			}
 			
