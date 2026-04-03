@@ -33,13 +33,13 @@ public class Taller1 {
 		// Patricio Javier Vidal Veas
 		// 22.330.827-9
 		// ICCI
-		Leer_archivo_usuarios();	
-		Leer_archivo_registros();
+		Leer_archivo_usuarios();	// Lee el archivo y más \\
+		Leer_archivo_registros(); 	// Lee el archivo y más \\
 		// CONTROL DE ERRORES \\
 		int opcion;	
 		do {
 			
-			System.out.println("1) Menu de Usuarios");
+			System.out.println("1) Menu de Usuarios"); // Menu \\
 			System.out.println("2) Menu de Actividades");
 			System.out.println("3) Salir");
 			
@@ -52,7 +52,7 @@ public class Taller1 {
 				opcion = 0;
 			}
 			
-			switch(opcion) {
+			switch(opcion) { // Casos posibles \\
 			
 			case(0):
 				break;
@@ -97,7 +97,7 @@ public class Taller1 {
 		int opcion = 0;
 		do {
 			
-			System.out.printf("Bienvenido! %s", usuarios[identificador]);
+			System.out.printf("Bienvenido! %s", usuarios[identificador]); // Menu de usuarios \\
 			System.out.println("");
 			System.out.println("¿Que deseas hacer?");
 			System.out.println("");
@@ -107,7 +107,7 @@ public class Taller1 {
 			System.out.println("4) Cambiar Contraseña");
 			System.out.println("5) Salir");
 			
-			try {
+			try { // Control de errores \\
 				String recibe = s.nextLine();
 				opcion = Integer.parseInt(recibe);
 			} catch(Exception e) {
@@ -140,17 +140,17 @@ public class Taller1 {
 		
 	}
 	
-	public static void Leer_archivo_usuarios() {
+	public static void Leer_archivo_usuarios() { // Lee Usuarios.txt y crea lista con los usuarios y con las contraseñas 
 			File usuarios_arch = new File("Usuarios.txt");
 			int contador = 0;
 			String linea;
 			
 			try(Scanner lector = new Scanner(usuarios_arch)) {
 				while(lector.hasNextLine()) {
-					linea = lector.nextLine();
+					linea = lector.nextLine(); 
 					String[] partes = linea.split(";");
-					usuarios[contador] = partes[0];
-					contraseñas[contador] = partes[1];
+					usuarios[contador] = partes[0]; // Lista con usuarios \\
+					contraseñas[contador] = partes[1]; // Lista con contraseñas \\
 					contador++;
 				}
 			} catch (FileNotFoundException error) {
@@ -159,7 +159,7 @@ public class Taller1 {
 			}
 		} 
 	
-	public static void Leer_archivo_registros() {
+	public static void Leer_archivo_registros() { // Lee el archivo registros.txt
 		File usuarios_arch = new File("Registros.txt");
 		String linea;
 		
@@ -168,9 +168,9 @@ public class Taller1 {
 				linea = lector.nextLine();
 				String[] partes = linea.split(";");
 				int index = Verificar_Usuario_archivo(partes[0]);
-				usuarios_actividades[index][contador_usuario[index]] = linea;
-				contador_usuario[index]++;
-				todos_actividades[contador_actividades] = linea;
+				usuarios_actividades[index][contador_usuario[index]] = linea; // Creacion de las actividades de cada usuario
+				contador_usuario[index]++; // Cuantas actividades lleva el usuario 
+				todos_actividades[contador_actividades] = linea; // Todas las actividades en una lista
 				
 				contador_actividades++;
 			}
@@ -178,11 +178,11 @@ public class Taller1 {
 			System.out.println("Archivo Registros no encontrado");		
 		}
 	} 
-	public static void Verificar_Usuario(String user) {
+	public static void Verificar_Usuario(String user) { // Ve si el usuario esta presente \\
 		identificador = -1;
 		for (int i = 0; i < usuarios.length; i++) {
 			if (usuarios[i].equals(user)) {
-					identificador = i;
+					identificador = i; // Indice que representa el usuario, 0 = primer_usuario y asi sigue \\
 				}
 			}
 		if (identificador == -1) {
@@ -191,7 +191,7 @@ public class Taller1 {
 		}
 		}
 	
-	public static int Verificar_Usuario_archivo(String user) {
+	public static int Verificar_Usuario_archivo(String user) { // Ve si el usuario esta presente y retorna un numero indice del usuario \\
 		for (int k = 0; k < usuarios.length; k++) {
 			if (usuarios[k].equals(user)) {
 					return k;
@@ -200,7 +200,7 @@ public class Taller1 {
 		return -1;
 		}
 	
-	public static void Menu_Actividades() {
+	public static void Menu_Actividades() { // Reinicia las listas para poder ocuparlas la proxima vez que se cargue \\
 		int opcion = 0;
 		for (int i = 0; i < 3; i++){
 			posicion_mayor[i] = 0;
@@ -210,10 +210,10 @@ public class Taller1 {
 			}
 		}
 		
-		Creacion_listas_actividades_horas(usuarios_actividades, 0);
-		Creacion_listas_actividades_horas(usuarios_actividades, 1);
+		Creacion_listas_actividades_horas(usuarios_actividades, 0); // Creacion de las listas de las actividades del usuario con sus horas \\
+		Creacion_listas_actividades_horas(usuarios_actividades, 1); // Para los 3 usuarios \\
 		Creacion_listas_actividades_horas(usuarios_actividades, 2);
-		Creacion_lista_global();
+		Creacion_lista_global(); // Creacion de las listas que contiene todas las actividades y la de sus horas totales \\
 		do {
 		System.out.println("¡Bienvenido al menu de Analisis!");
 		System.out.println("");
@@ -225,7 +225,7 @@ public class Taller1 {
 		System.out.println("4) Ver todas las actividades");
 		System.out.println("5) Salir");
 		
-		try {
+		try { // Control de errores \\
 			String recibe = s.nextLine();
 			opcion = Integer.parseInt(recibe);
 		} catch(Exception e) {
@@ -262,23 +262,23 @@ public class Taller1 {
 		
 		boolean valida_fecha = false;
 		int cronologia = 0;
-		if (contador_actividades < 300) {
+		if (contador_actividades < 300) { // Si se pasa de 300 actividades \\
 		do {
 			
 			try {
-			System.out.println("Digame la fecha, de forma dia/mes/año");
+			System.out.println("Digame la fecha, de forma dia/mes/año"); // Ingreso de datos \\
 			String fecha = s.nextLine();
 			String[] partes_fecha = fecha.split("/");
 			fechas[0] = Integer.parseInt(partes_fecha[0]);
 			fechas[1] = Integer.parseInt(partes_fecha[1]);
 			fechas[2] = Integer.parseInt(partes_fecha[2]);
 			cronologia = (fechas[0]) + (fechas[1])*30 + (fechas[2]*365);
-			if (fechas[0] > 31 || fechas[0] <= 0 || fechas[1] > 12 || fechas[1] < 0 || fechas[2] < 2000) {
+			if (fechas[0] > 31 || fechas[0] <= 0 || fechas[1] > 12 || fechas[1] < 0 || fechas[2] < 2000) { // Control de errores \\
 				System.out.println("Ingrese numeros correctos");
 			} else {
 				System.out.println("Digame las horas de la actividad");
 				actividad_y_horas[0] = s.nextLine();
-				int horas = Integer.parseInt(actividad_y_horas[0]); // ARREGLAR ESTO DESPUES
+				int horas = Integer.parseInt(actividad_y_horas[0]); 
 				System.out.println("Digame el nombre de la actividad");
 				actividad_y_horas[1] = s.nextLine();
 				
@@ -308,9 +308,9 @@ public class Taller1 {
 				String[] partes = linea.split(";");
 				String[] partes_dos = partes[1].split("/");
 				int cronologia_dos = Integer.parseInt(partes_dos[0]) + (Integer.parseInt(partes_dos[1]))*30 + (Integer.parseInt(partes_dos[2]))*365;
-				if (cronologia < cronologia_dos && escrito == false) {
+				if (cronologia < cronologia_dos && escrito == false) { //  Ingresar linea de la actividad ingresada \\
 					bw.write(usuarios[identificador] + ";" + fechas[0] + "/" + fechas[1] + "/" + fechas[2] + ";" + actividad_y_horas[0] + ";" + actividad_y_horas[1]);
-					bw.newLine();
+					bw.newLine(); 
 					bw.write(linea);
 					
 					escrito = true;
@@ -320,7 +320,7 @@ public class Taller1 {
 				bw.newLine();
 			}
 			
-			if (escrito == false) {
+			if (escrito == false) { // Por si es el ultima linea \\
 				bw.write(usuarios[identificador] + ";" + fechas[0] + "/" + fechas[1] + "/" + fechas[2] + ";" + actividad_y_horas[0] + ";" + actividad_y_horas[1]);
 				bw.newLine();
 			}
@@ -332,12 +332,12 @@ public class Taller1 {
 			
 			if(arch_new.renameTo(arch_og)) {
 				System.out.println("¡Actividad Registrada!");
-				contador_actividades = 0;
+				contador_actividades = 0; // Reiniciar los datos para rehacer las listas \\
 				for(int i = 0; i < contador_usuario.length; i++ ) {
 					contador_usuario[i] = 0;
 
 				}
-				Leer_archivo_registros();
+				Leer_archivo_registros(); // Rehacer las lista \\
 			} else {
 				System.out.println("No se pudo renombrar");
 			}
@@ -357,13 +357,13 @@ public class Taller1 {
 		int opcion2 = -1;
 		
 		do {
-		System.out.println("¿Que actividad desea modificar?");
+		System.out.println("¿Que actividad desea modificar?"); // Pide al usuario \\
 		System.out.println("0) Regresar");
-		for (int j = 0; j < (contador_usuario[identificador]); j++) {
+		for (int j = 0; j < (contador_usuario[identificador]); j++) { // Muestra actividades del usuario \\
 			System.out.println((j+1) + ") " + usuarios_actividades[identificador][j]);		
 		
 		}
-		try {
+		try { // Control de errores \\
 			String recibe = s.nextLine();
 			opcion = Integer.parseInt(recibe);
 			if (opcion > (contador_usuario[identificador]) || opcion < 0) {
@@ -381,7 +381,7 @@ public class Taller1 {
 		
 		
 		do {
-			if (opcion != 0) {
+			if (opcion != 0) { // Menu de modificación \\
 				System.out.println("¿Que desea modificar de esta actividad?");
 				System.out.println(usuarios_actividades[identificador][opcion-1]);
 				System.out.println();
@@ -390,7 +390,7 @@ public class Taller1 {
 				System.out.println("2) Duracion");
 				System.out.println("3) Tipo Actividad");
 					
-				try {
+				try { // Control de errores \\
 					String recibe = s.nextLine();
 					opcion2 = Integer.parseInt(recibe);
 				} catch(Exception e) {
@@ -399,11 +399,11 @@ public class Taller1 {
 					opcion2 = 0;
 				}
 							
-				switch(opcion2) {
+				switch(opcion2) { // Casos posibles \\
 				
 				case(0):
 					 break;
-				case(1):
+				case(1): // Fecha \\
 					try {
 					System.out.println("Digame la fecha, de forma dia/mes/año");
 					String fecha = s.nextLine();
@@ -411,10 +411,10 @@ public class Taller1 {
 					fechas[0] = Integer.parseInt(partes_fecha[0]);
 					fechas[1] = Integer.parseInt(partes_fecha[1]);
 					fechas[2] = Integer.parseInt(partes_fecha[2]);
-					if (fechas[0] >= 31 || fechas[0] < 0 || fechas[1] > 12 || fechas[1] < 0 || fechas[2] < 2000) {
+					if (fechas[0] >= 31 || fechas[0] < 0 || fechas[1] > 12 || fechas[1] < 0 || fechas[2] < 2000) { // Control de errores \\
 						System.out.println("Ingrese numeros correctos");
 					} else {
-						Modificar(usuarios_actividades[identificador][opcion-1], 0, fecha);
+						Modificar(usuarios_actividades[identificador][opcion-1], 0, fecha); // Modifica la actividad \\
 						
 					}
 				
@@ -423,7 +423,7 @@ public class Taller1 {
 						opcion2 = -1;
 					}
 					break;
-				case(2):
+				case(2): // Horas \\
 					System.out.println("Digame las horas de la actividad");
 					actividad_y_horas[0] = s.nextLine();
 					try {
@@ -433,7 +433,7 @@ public class Taller1 {
 						System.out.println("Solo numeros");
 					}
 					break;
-				case(3):
+				case(3): // Actividad \\
 					System.out.println("Digame el nombre de la actividad");
 					actividad_y_horas[1] = s.nextLine();
 					Modificar(usuarios_actividades[identificador][opcion-1], 2, actividad_y_horas[1]);
@@ -468,7 +468,7 @@ public class Taller1 {
 			
 			while((linea = br.readLine()) != null) {
 			
-				if (linea.equals(linea_modificar)) {
+				if (linea.equals(linea_modificar)) { // Cambia la linea antigua por la nueva con el cambio \\
 					
 					String linea_nueva = linea;
 					
@@ -500,12 +500,12 @@ public class Taller1 {
 			
 			if(arch_new.renameTo(arch_og)) {
 				System.out.println("¡Actividad Registrada!");
-				contador_actividades = 0;
+				contador_actividades = 0; // Reiniciar los datos para rehacer las listas \\
 				for(int i = 0; i < contador_usuario.length; i++ ) {
 					contador_usuario[i] = 0;
 				}
 				
-				Leer_archivo_registros();
+				Leer_archivo_registros(); // Rehacer las listas \\
 			} else System.out.println("No se pudo renombrar");
 		} else System.out.println("No se pudo borrar archivo original");
 	}
@@ -518,7 +518,7 @@ public class Taller1 {
 		contador = 0;
 		System.out.println("¿Que actividad desea eliminar?");
 		System.out.println("0) Regresar");
-		for (int j = 0; j < (contador_usuario[identificador]); j++) {
+		for (int j = 0; j < (contador_usuario[identificador]); j++) { // Muestra la lista de actividades del usuario \\
 			System.out.println((j+1) + ") " + usuarios_actividades[identificador][j]);		
 			contador++;
 		
@@ -530,7 +530,7 @@ public class Taller1 {
 				opcion =-1;
 				System.out.println("Eliga un numero que corresponda a una actividad");
 			} else if (opcion != 0) {
-				Eliminar(usuarios_actividades[identificador][opcion-1]);
+				Eliminar(usuarios_actividades[identificador][opcion-1]); // Elimina la actividad \\
 				opcion = 0;
 			}
 			
@@ -557,7 +557,7 @@ public class Taller1 {
 			
 			while((linea = br.readLine()) != null) {
 			
-				if (linea.equals(linea_a_borrar)) {
+				if (linea.equals(linea_a_borrar)) { // Borra la linea \\
 														
 				} else {
 					bw.write(linea);
@@ -573,18 +573,18 @@ public class Taller1 {
 			
 			if(arch_new.renameTo(arch_og)) {
 				System.out.println("¡Actividad Eliminada!");
-				contador_actividades = 0;
+				contador_actividades = 0; // Reiniciar los datos para rehacer las listas \\
 				for(int i = 0; i < contador_usuario.length; i++ ) {
 					contador_usuario[i] = 0;
 				}
 				
-				Leer_archivo_registros();
+				Leer_archivo_registros(); // Rehacer las listas \\
 			} else System.out.println("No se pudo renombrar");
 		} else System.out.println("No se pudo borrar archivo original");
 	}
 	
 	
-	public static void Cambiar_Contraseña() {
+	public static void Cambiar_Contraseña() { // Cambio de contraseña \\
 		System.out.println("A que contraseña desea cambiarla, escribala a continuación");
 		String nueva_contraseña = s.nextLine();
 		
@@ -601,7 +601,7 @@ public class Taller1 {
 				String[] partes = linea.split(";");
 				String usuario = partes[0];
 				
-				if (usuario.equals(usuarios[identificador])) {
+				if (usuario.equals(usuarios[identificador])) { // Cambiar contraseña del archivo \\
 					bw.write(usuario + ";" + nueva_contraseña);	
 					bw.newLine();
 				} else {
@@ -618,7 +618,7 @@ public class Taller1 {
 			
 			if(arch_new.renameTo(arch_og)) {
 				System.out.println("¡Contraseña cambiada!");
-				Leer_archivo_usuarios();
+				Leer_archivo_usuarios(); // Rehacer listas \\
 			} else System.out.println("No se pudo renombrar");
 		} else System.out.println("No se pudo borrar archivo original");
 		
@@ -626,7 +626,7 @@ public class Taller1 {
 	
 	
 	public static void Creacion_listas_actividades_horas(String[][] lista, int numero) {
-		
+		// Creacion de listas con las actividades unicas de cada uno y las horas de cada actividad \\
 		boolean existe = false;
 		int contador = 0;
 		
@@ -638,18 +638,18 @@ public class Taller1 {
 			for (int j = 0; j < contador; j++) {
 				if(actividades_unicas[numero][j] != null && actividades_unicas[numero][j].equals(actividad) ) {
 					existe = true;
-					horas_totales_por_actividad[numero][j] += horas_actividad;
+					horas_totales_por_actividad[numero][j] += horas_actividad; // Horas de la actividad \\
 					break;
 				}
 				
 			}
 			if(existe == false) {
-				actividades_unicas[numero][contador] = actividad;
+				actividades_unicas[numero][contador] = actividad; // Actividad nueva \\
 				horas_totales_por_actividad[numero][contador] += horas_actividad;
 				contador ++;
 			}
 		}	
-		Encontrar_Mayor(horas_totales_por_actividad, contador, numero );
+		Encontrar_Mayor(horas_totales_por_actividad, contador, numero ); // Encontrar la actividad con mas horas de cada usuario \\
 	}
 	
 	public static void Actividad_Mas_Realizada() {
@@ -658,7 +658,7 @@ public class Taller1 {
 		int mayor = -9999;
 		int posicion_mayor_global = 0;
 		
-		for (int l = 0; l < (actividades_globales.length); l++) {
+		for (int l = 0; l < (actividades_globales.length); l++) { // Encontrar la actividad más realizada de entre todas \\
 			if (horas_globales[l] > mayor) {
 				mayor = horas_globales[l];
 				posicion_mayor_global = l;
@@ -670,7 +670,7 @@ public class Taller1 {
 	}
 	
 	public static void Creacion_lista_global() {
-		for (int p = 0; p < horas_globales.length; p++) {
+		for (int p = 0; p < horas_globales.length; p++) { // Reinicia listas cada vez que se inicialize \\
 			horas_globales[p] = 0;
 			actividades_globales[p] = null;
 		}
@@ -683,16 +683,16 @@ public class Taller1 {
 			String[] partes = usuarios_actividades[i][j].split(";");
 			int horas_actividad = Integer.parseInt(partes[2]);
 			String actividad = partes[3];
-			for (int k = 0; k < contador; k++) {
+			for (int k = 0; k < contador; k++) { // Crea la lista con todas las actividades unicas, y sus horas entre todos los usuarios \\
 				if(actividades_globales[k] != null && actividades_globales[k].equals(actividad) ) {
 					existe = true;
-					horas_globales[k] += horas_actividad;
+					horas_globales[k] += horas_actividad; // Agrega las horas \\
 					break;
 				}
 				
 			}
 			if(existe == false) {
-				actividades_globales[contador] = actividad;
+				actividades_globales[contador] = actividad; // Agrega la nueva actividad \\
 				horas_globales[contador] += horas_actividad;
 				contador ++;
 			}
@@ -704,7 +704,7 @@ public class Taller1 {
 		int mayor = -9999;
 		
 		
-		for (int i = 0; i < numero; i++) {
+		for (int i = 0; i < numero; i++) { // Encuentra el mayor de una lista y guarda su indice \\
 			if (lista[identifica][i] > mayor) {
 				mayor = lista[identifica][i];
 				posicion_mayor[identifica] = i;
@@ -725,14 +725,14 @@ public class Taller1 {
 		int mayor = -99999;
 		int posicion_mayor = 0;
 		int[] suma_horas = new int[3];
-		for(int i = 0; i < usuarios.length; i++) {
+		for(int i = 0; i < usuarios.length; i++) { // Suma todas las horas de las actividades de los usuarios \\
 			for (int j = 0; j < (contador_usuario[i]); j++) {
 				suma_horas[i] += horas_totales_por_actividad[i][j];
 			}
 			
 		}
 		
-		for(int i = 0; i < usuarios.length; i++) {
+		for(int i = 0; i < usuarios.length; i++) { // Busca al usuario con más horas \\
 			if(suma_horas[i] > mayor) {
 				mayor = suma_horas[i];
 				posicion_mayor = i;
@@ -741,7 +741,7 @@ public class Taller1 {
 		System.out.println("El más procrastinador es " + usuarios[posicion_mayor] + " con " + suma_horas[posicion_mayor] + " horas" );
 	}
 	
-	public static void Ver_Actividades() {
+	public static void Ver_Actividades() { // Muestra todas las actividades \\
 		for (int i = 0; i < (todos_actividades.length); i++) {
 			if (todos_actividades[i] != null) {
 				System.out.println(i+1 + ") " + todos_actividades[i]);
